@@ -4,6 +4,7 @@ class ThumbnailsView {
     var scrollView: ScrollView!
     var contentView: EffectView!
     var rows = [[ThumbnailView]]()
+    var searchLabel: NSTextField?
     static var recycledViews = [ThumbnailView]()
     static var thumbnailsWidth = CGFloat(0.0)
     static var thumbnailsHeight = CGFloat(0.0)
@@ -18,6 +19,20 @@ class ThumbnailsView {
         contentView = makeAppropriateEffectView()
         scrollView = ScrollView()
         contentView.addSubview(scrollView)
+        
+        // Re-add search label to new contentView if it exists
+        if let searchLabel = searchLabel {
+            contentView.addSubview(searchLabel)
+        } else {
+            // Create search label on first initialization
+            let label = NSTextField(labelWithString: "")
+            label.font = NSFont.systemFont(ofSize: 14)
+            label.textColor = .secondaryLabelColor
+            label.alignment = .center
+            label.isHidden = true
+            searchLabel = label
+            contentView.addSubview(label)
+        }
     }
 
     func reset() {
@@ -25,6 +40,8 @@ class ThumbnailsView {
         // Maybe in some Appkit willDraw() function that triggers before drawing it
         NSScreen.updatePreferred()
         Appearance.update()
+        // Clear search label reference; it will be recreated in updateBackgroundView() with the new contentView
+        searchLabel = nil
         updateBackgroundView()
         App.app.thumbnailsPanel.contentView = contentView
         for i in 0..<ThumbnailsView.recycledViews.count {
@@ -100,6 +117,25 @@ class ThumbnailsView {
                 }
             }
             highlightStartView()
+            updateSearchLabel()
+        }
+    }
+
+    private func updateSearchLabel() {
+        guard let searchLabel = searchLabel else { return }
+        
+        if Preferences.appearanceStyle == .titles && !App.app.searchQuery.isEmpty {
+            searchLabel.stringValue = "🔍 \(App.app.searchQuery)"
+            searchLabel.isHidden = false
+            searchLabel.sizeToFit()
+            // Position at the bottom center of the content view
+            let labelWidth = searchLabel.frame.width
+            let labelHeight = searchLabel.frame.height
+            let x = (contentView.frame.width - labelWidth) / 2
+            let y = Appearance.interCellPadding / 2
+            searchLabel.frame = CGRect(x: x, y: y, width: labelWidth, height: labelHeight)
+        } else {
+            searchLabel.isHidden = true
         }
     }
 

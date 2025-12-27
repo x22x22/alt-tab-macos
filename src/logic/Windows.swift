@@ -251,8 +251,18 @@ class Windows {
         }
     }
 
-    static func updateFocusedWindowIndex() {
-        if let focusedWindow = focusedWindow() {
+    static func updateFocusedWindowIndex(_ resetToFirst: Bool = false) {
+        if resetToFirst {
+            // Reset to the first window that should be shown
+            if let firstValidIndex = list.firstIndex(where: { $0.shouldShowTheUser }) {
+                focusedWindowIndex = firstValidIndex
+                ThumbnailsView.highlight(focusedWindowIndex)
+                previewFocusedWindowIfNeeded()
+            } else {
+                // No valid windows found - keep current index or set to 0
+                focusedWindowIndex = 0
+            }
+        } else if let focusedWindow = focusedWindow() {
             if !focusedWindow.shouldShowTheUser {
                 cycleFocusedWindowIndex(windowIndexAfterCycling(1) > focusedWindowIndex ? 1 : -1)
             } else {
@@ -359,6 +369,12 @@ class Windows {
         }
     }
 
+    static func refreshAllWindowsFilters() {
+        for window in list {
+            refreshIfWindowShouldBeShownToTheUser(window)
+        }
+    }
+
     private static func refreshIfWindowShouldBeShownToTheUser(_ window: Window) {
         window.shouldShowTheUser =
             !(window.application.bundleIdentifier.flatMap { id in
@@ -376,7 +392,21 @@ class Windows {
                 !(!(Preferences.showMinimizedWindows[App.app.shortcutIndex] != .hide) && window.isMinimized) &&
                 !(Preferences.spacesToShow[App.app.shortcutIndex] == .visible && !Spaces.visibleSpaces.contains { visibleSpace in window.spaceIds.contains { $0 == visibleSpace } }) &&
                 !(Preferences.screensToShow[App.app.shortcutIndex] == .showingAltTab && !window.isOnScreen(NSScreen.preferred)) &&
-                (Preferences.showTabsAsWindows || !window.isTabbed))
+                (Preferences.showTabsAsWindows || !window.isTabbed)) &&
+            matchesSearchQuery(window)
+    }
+
+    private static func matchesSearchQuery(_ window: Window) -> Bool {
+        let query = App.app.searchQuery
+        // If search is not active or appearance style is not titles, show all windows
+        if query.isEmpty || Preferences.appearanceStyle != .titles {
+            return true
+        }
+        // Match against window title and app name (case-insensitive)
+        let lowercaseQuery = query.lowercased()
+        let titleMatches = window.title.lowercased().contains(lowercaseQuery)
+        let appNameMatches = window.application.localizedName.lowercased().contains(lowercaseQuery)
+        return titleMatches || appNameMatches
     }
 
     /// Selects the most appropriate main window from a given list of windows.

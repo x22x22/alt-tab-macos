@@ -24,6 +24,7 @@ class App: AppCenterApplication {
     var appIsBeingUsed = false
     var shortcutIndex = 0
     var forceDoNothingOnRelease = false
+    var searchQuery = ""
     private var feedbackWindow: FeedbackWindow!
     private var isFirstSummon = true
     private var isVeryFirstSummon = true
@@ -61,6 +62,7 @@ class App: AppCenterApplication {
         appIsBeingUsed = false
         isFirstSummon = true
         forceDoNothingOnRelease = false
+        searchQuery = ""
         MouseEvents.toggle(false)
         ScrollwheelEvents.toggle(false)
         hideThumbnailPanelWithoutChangingKeyWindow()
@@ -69,6 +71,21 @@ class App: AppCenterApplication {
         }
         hideAllTooltips()
         MainMenu.toggle(enabled: true)
+    }
+
+    func updateSearchQuery(_ query: String) {
+        searchQuery = query
+        if appIsBeingUsed {
+            // Re-evaluate which windows should be shown based on new search query
+            Windows.refreshAllWindowsFilters()
+            Windows.updateFocusedWindowIndex(true)
+            thumbnailsPanel.updateContents()
+            Windows.previewFocusedWindowIfNeeded()
+        }
+    }
+
+    func clearSearchQuery() {
+        updateSearchQuery("")
     }
 
     /// some tooltips may not be hidden when the main window is hidden; we force it through a private API
