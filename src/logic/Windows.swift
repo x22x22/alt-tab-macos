@@ -254,12 +254,14 @@ class Windows {
     static func updateFocusedWindowIndex(_ resetToFirst: Bool = false) {
         if resetToFirst {
             // Reset to the first window that should be shown
-            focusedWindowIndex = 0
             if let firstValidIndex = list.firstIndex(where: { $0.shouldShowTheUser }) {
                 focusedWindowIndex = firstValidIndex
+                ThumbnailsView.highlight(focusedWindowIndex)
+                previewFocusedWindowIfNeeded()
+            } else {
+                // No valid windows found - keep current index or set to 0
+                focusedWindowIndex = 0
             }
-            ThumbnailsView.highlight(focusedWindowIndex)
-            previewFocusedWindowIfNeeded()
         } else if let focusedWindow = focusedWindow() {
             if !focusedWindow.shouldShowTheUser {
                 cycleFocusedWindowIndex(windowIndexAfterCycling(1) > focusedWindowIndex ? 1 : -1)

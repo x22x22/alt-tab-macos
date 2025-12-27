@@ -11,7 +11,14 @@ class KeyboardEventsTestable {
     ]
     
     // Map of macOS virtual key codes to characters (normal, shifted)
-    // Note: Some keyCodes are intentionally omitted (e.g., 10 is unmapped, 36 is Return)
+    // Intentionally omitted keyCodes:
+    // - 10: Not mapped (§/± key on some keyboards)
+    // - 36: Return/Enter (not used for search input)
+    // - 48: Tab (reserved for window switching shortcut)
+    // - 51: Delete/Backspace (handled separately in handleSearchInput)
+    // - 52: Not mapped on standard US keyboard
+    // - 53: Escape (handled separately in handleSearchInput)
+    // - Arrow keys (123-126): Reserved for navigation shortcuts
     static let keyCodeMap: [UInt32: (String, String)] = [
         0: ("a", "A"), 1: ("s", "S"), 2: ("d", "D"), 3: ("f", "F"), 4: ("h", "H"),
         5: ("g", "G"), 6: ("z", "Z"), 7: ("x", "X"), 8: ("c", "C"), 9: ("v", "V"),
@@ -22,7 +29,7 @@ class KeyboardEventsTestable {
         31: ("o", "O"), 32: ("u", "U"), 33: ("[", "{"), 34: ("i", "I"), 35: ("p", "P"),
         37: ("l", "L"), 38: ("j", "J"), 39: ("'", "\""), 40: ("k", "K"), 41: (";", ":"),
         42: ("\\", "|"), 43: (",", "<"), 44: ("/", "?"), 45: ("n", "N"), 46: ("m", "M"),
-        47: (".", ">"), 49: (" ", " ")
+        47: (".", ">"), 49: (" ", " "), 50: ("`", "~")
         // Note: keyCode 36 is Return/Enter (handled separately if needed)
         // Note: keyCode 48 is Tab (used for window switching)
         // Note: keyCode 51 is Delete/Backspace (handled separately)

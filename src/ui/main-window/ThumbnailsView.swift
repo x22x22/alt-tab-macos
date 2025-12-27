@@ -40,6 +40,7 @@ class ThumbnailsView {
         // Maybe in some Appkit willDraw() function that triggers before drawing it
         NSScreen.updatePreferred()
         Appearance.update()
+        // Clear search label reference; it will be recreated in updateBackgroundView() with the new contentView
         searchLabel = nil
         updateBackgroundView()
         App.app.thumbnailsPanel.contentView = contentView
