@@ -65,6 +65,7 @@ private func handleSearchInput(_ keyCode: UInt32, _ modifiers: NSEvent.ModifierF
             App.app.clearSearchQuery()
             return true
         }
+        // If search is empty, let the normal cancel shortcut handle it
         return false
     }
     

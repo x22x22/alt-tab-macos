@@ -367,6 +367,12 @@ class Windows {
         }
     }
 
+    static func refreshAllWindowsFilters() {
+        for window in list {
+            refreshIfWindowShouldBeShownToTheUser(window)
+        }
+    }
+
     private static func refreshIfWindowShouldBeShownToTheUser(_ window: Window) {
         window.shouldShowTheUser =
             !(window.application.bundleIdentifier.flatMap { id in

@@ -76,6 +76,8 @@ class App: AppCenterApplication {
     func updateSearchQuery(_ query: String) {
         searchQuery = query
         if appIsBeingUsed {
+            // Re-evaluate which windows should be shown based on new search query
+            Windows.refreshAllWindowsFilters()
             Windows.updateFocusedWindowIndex(true)
             thumbnailsPanel.updateContents()
             Windows.previewFocusedWindowIfNeeded()
