@@ -9,6 +9,25 @@ class KeyboardEventsTestable {
         "holdShortcut2": 6,
         "holdShortcut3": 7,
     ]
+    
+    // Map of macOS virtual key codes to characters (normal, shifted)
+    // Note: Some keyCodes are intentionally omitted (e.g., 10 is unmapped, 36 is Return)
+    static let keyCodeMap: [UInt32: (String, String)] = [
+        0: ("a", "A"), 1: ("s", "S"), 2: ("d", "D"), 3: ("f", "F"), 4: ("h", "H"),
+        5: ("g", "G"), 6: ("z", "Z"), 7: ("x", "X"), 8: ("c", "C"), 9: ("v", "V"),
+        11: ("b", "B"), 12: ("q", "Q"), 13: ("w", "W"), 14: ("e", "E"), 15: ("r", "R"),
+        16: ("y", "Y"), 17: ("t", "T"), 18: ("1", "!"), 19: ("2", "@"), 20: ("3", "#"),
+        21: ("4", "$"), 22: ("6", "^"), 23: ("5", "%"), 24: ("=", "+"), 25: ("9", "("),
+        26: ("7", "&"), 27: ("-", "_"), 28: ("8", "*"), 29: ("0", ")"), 30: ("]", "}"),
+        31: ("o", "O"), 32: ("u", "U"), 33: ("[", "{"), 34: ("i", "I"), 35: ("p", "P"),
+        37: ("l", "L"), 38: ("j", "J"), 39: ("'", "\""), 40: ("k", "K"), 41: (";", ":"),
+        42: ("\\", "|"), 43: (",", "<"), 44: ("/", "?"), 45: ("n", "N"), 46: ("m", "M"),
+        47: (".", ">"), 49: (" ", " ")
+        // Note: keyCode 36 is Return/Enter (handled separately if needed)
+        // Note: keyCode 48 is Tab (used for window switching)
+        // Note: keyCode 51 is Delete/Backspace (handled separately)
+        // Note: keyCode 53 is Escape (handled separately)
+    ]
 }
 
 @discardableResult
@@ -79,23 +98,8 @@ private func handleSearchInput(_ keyCode: UInt32, _ modifiers: NSEvent.ModifierF
 }
 
 private func keyCodeToCharacter(_ keyCode: UInt32, _ shift: Bool) -> String? {
-    // Map of key codes to characters
-    let keyMap: [UInt32: (String, String)] = [
-        0: ("a", "A"), 1: ("s", "S"), 2: ("d", "D"), 3: ("f", "F"), 4: ("h", "H"),
-        5: ("g", "G"), 6: ("z", "Z"), 7: ("x", "X"), 8: ("c", "C"), 9: ("v", "V"),
-        11: ("b", "B"), 12: ("q", "Q"), 13: ("w", "W"), 14: ("e", "E"), 15: ("r", "R"),
-        16: ("y", "Y"), 17: ("t", "T"), 18: ("1", "!"), 19: ("2", "@"), 20: ("3", "#"),
-        21: ("4", "$"), 22: ("6", "^"), 23: ("5", "%"), 24: ("=", "+"), 25: ("9", "("),
-        26: ("7", "&"), 27: ("-", "_"), 28: ("8", "*"), 29: ("0", ")"), 30: ("]", "}"),
-        31: ("o", "O"), 32: ("u", "U"), 33: ("[", "{"), 34: ("i", "I"), 35: ("p", "P"),
-        37: ("l", "L"), 38: ("j", "J"), 39: ("'", "\""), 40: ("k", "K"), 41: (";", ":"),
-        42: ("\\", "|"), 43: (",", "<"), 44: ("/", "?"), 45: ("n", "N"), 46: ("m", "M"),
-        47: (".", ">"), 49: (" ", " ")
-    ]
-    
-    if let (normal, shifted) = keyMap[keyCode] {
+    if let (normal, shifted) = KeyboardEventsTestable.keyCodeMap[keyCode] {
         return shift ? shifted : normal
     }
-    
     return nil
 }

@@ -20,8 +20,11 @@ class ThumbnailsView {
         scrollView = ScrollView()
         contentView.addSubview(scrollView)
         
-        // Add search label
-        if searchLabel == nil {
+        // Re-add search label to new contentView if it exists
+        if let searchLabel = searchLabel {
+            contentView.addSubview(searchLabel)
+        } else {
+            // Create search label on first initialization
             let label = NSTextField(labelWithString: "")
             label.font = NSFont.systemFont(ofSize: 14)
             label.textColor = .secondaryLabelColor
