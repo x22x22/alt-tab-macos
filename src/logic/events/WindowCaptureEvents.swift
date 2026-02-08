@@ -62,7 +62,7 @@ class WindowCaptureScreenshots {
         ActiveWindowCaptures.increment()
         SCScreenshotManager.captureImage(contentFilter: filter, configuration: config) { cgImage, error in
             ActiveWindowCaptures.decrement()
-            guard let cgImage, error == nil else { Logger.error { "\(cgImage == nil) \(error)" }; return }
+            guard let cgImage, error == nil else { Logger.error { "\(window.debugId) \(cgImage == nil) \(error)" }; return }
             guard source != .refreshOnlyThumbnailsAfterShowUi || App.app.appIsBeingUsed else { return }
             DispatchQueue.main.async {
                 guard source != .refreshOnlyThumbnailsAfterShowUi || App.app.appIsBeingUsed else { return }
@@ -258,7 +258,7 @@ extension SCStreamConfiguration {
         // window.size shows logical size. It doesn't change when the scaleFactor changes. We need to correct for this as we need to capture more and less pixels depending on DPI
         let originalSize = NSSize(width: size.width * scaleFactor, height: size.height * scaleFactor)
         guard originalSize.width > 0, originalSize.height > 0 else { return }
-        if Preferences.previewFocusedWindow {
+        if Preferences.previewSelectedWindow {
             width = Int(originalSize.width)
             height = Int(originalSize.height)
         } else {

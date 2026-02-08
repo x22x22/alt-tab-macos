@@ -96,30 +96,30 @@ class App: AppCenterApplication {
     }
 
     func closeSelectedWindow() {
-        Windows.focusedWindow()?.close()
+        Windows.selectedWindow()?.close()
     }
 
     func minDeminSelectedWindow() {
-        Windows.focusedWindow()?.minDemin()
+        Windows.selectedWindow()?.minDemin()
     }
 
     func toggleFullscreenSelectedWindow() {
-        Windows.focusedWindow()?.toggleFullscreen()
+        Windows.selectedWindow()?.toggleFullscreen()
     }
 
     func quitSelectedApp() {
-        Windows.focusedWindow()?.application.quit()
+        Windows.selectedWindow()?.application.quit()
     }
 
     func hideShowSelectedApp() {
-        Windows.focusedWindow()?.application.hideOrShow()
+        Windows.selectedWindow()?.application.hideOrShow()
     }
 
     func focusTarget() {
         guard appIsBeingUsed else { return } // already hidden
-        let focusedWindow = Windows.focusedWindow()
-        Logger.info { focusedWindow?.debugId() }
-        focusSelectedWindow(focusedWindow)
+        let selectedWindow = Windows.selectedWindow()
+        Logger.info { selectedWindow?.debugId }
+        focusSelectedWindow(selectedWindow)
     }
 
     @objc func checkForUpdatesNow(_ sender: NSMenuItem) {
@@ -170,7 +170,7 @@ class App: AppCenterApplication {
         if direction == .up || direction == .down {
             thumbnailsPanel.thumbnailsView.navigateUpOrDown(direction, allowWrap: allowWrap)
         } else {
-            Windows.cycleFocusedWindowIndex(direction.step(), allowWrap: allowWrap)
+            Windows.cycleSelectedWindowIndex(direction.step(), allowWrap: allowWrap)
         }
     }
 
@@ -207,13 +207,13 @@ class App: AppCenterApplication {
             if !Windows.updatesBeforeShowing() { hideUi(); return }
         }
         guard appIsBeingUsed else { return }
-        Windows.updateFocusedWindowIndex()
+        Windows.updateSelectedWindow()
         guard appIsBeingUsed else { return }
         thumbnailsPanel.updateContents()
         guard appIsBeingUsed else { return }
         Windows.voiceOverWindow() // at this point ThumbnailViews are assigned to the window, and ready
         guard appIsBeingUsed else { return }
-        Windows.previewFocusedWindowIfNeeded()
+        Windows.previewSelectedWindowIfNeeded()
         guard appIsBeingUsed else { return }
         Applications.refreshBadgesAsync()
     }
@@ -225,10 +225,10 @@ class App: AppCenterApplication {
             previewPanel.orderOut(nil)
             return
         }
-        Windows.updateFocusedWindowIndex()
+        Windows.updateSelectedWindow()
         thumbnailsPanel.updateContents()
         Windows.voiceOverWindow()
-        Windows.previewFocusedWindowIfNeeded()
+        Windows.previewSelectedWindowIfNeeded()
     }
 
     func showUiOrCycleSelection(_ shortcutIndex: Int, _ forceDoNothingOnRelease_: Bool) {
@@ -245,7 +245,7 @@ class App: AppCenterApplication {
             isFirstSummon = false
             self.shortcutIndex = shortcutIndex
             if !Windows.updatesBeforeShowing() { hideUi(); return }
-            Windows.setInitialFocusedAndHoveredWindowIndex()
+            Windows.setInitialSelectedAndHoveredWindowIndex()
             if Preferences.windowDisplayDelay == DispatchTimeInterval.milliseconds(0) {
                 buildUiAndShowPanel()
             } else {
@@ -274,10 +274,10 @@ class App: AppCenterApplication {
         Windows.refreshThumbnailsAsync(Windows.list, .refreshOnlyThumbnailsAfterShowUi)
     }
 
-    func checkIfShortcutsShouldBeDisabled(_ activeWindow: Window?, _ activeApp: NSRunningApplication?) {
-        let app = activeWindow?.application.runningApplication ?? activeApp
+    func checkIfShortcutsShouldBeDisabled(_ activeWindow: Window?, _ activeApp: Application?) {
+        let app = activeWindow?.application ?? activeApp!
         let shortcutsShouldBeDisabled = Preferences.blacklist.contains { blacklistedId in
-            if let id = app?.bundleIdentifier {
+            if let id = app.bundleIdentifier {
                 return id.hasPrefix(blacklistedId.bundleIdentifier) &&
                     (blacklistedId.ignore == .always || (blacklistedId.ignore == .whenFullscreen && (activeWindow?.isFullscreen ?? false)))
             }
@@ -314,6 +314,8 @@ extension App: NSApplicationDelegate {
         BackgroundWork.start()
         NSScreen.updatePreferred()
         Appearance.update()
+        ThumbnailsPanel.updateMaxPossibleThumbnailSize()
+        ThumbnailsPanel.updateMaxPossibleAppIconSize()
         Menubar.initialize()
         MainMenu.loadFromXib()
         self.thumbnailsPanel = ThumbnailsPanel()
@@ -322,8 +324,6 @@ extension App: NSApplicationDelegate {
         Screens.refresh()
         SpacesEvents.observe()
         ScreensEvents.observe()
-        ThumbnailsPanel.updateMaxPossibleThumbnailSize()
-        ThumbnailsPanel.updateMaxPossibleAppIconSize()
         SystemAppearanceEvents.observe()
         SystemScrollerStyleEvents.observe()
         Applications.initialDiscovery()

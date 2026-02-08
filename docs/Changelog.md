@@ -1,3 +1,49 @@
+## [8.3.4](https://github.com/lwouis/alt-tab-macos/compare/v8.3.3...v8.3.4) (2026-01-31)
+
+
+### Bug Fixes
+
+* app could sometimes crash in the background ([ab704dc](https://github.com/lwouis/alt-tab-macos/commit/ab704dc)), closes [#5260](https://github.com/lwouis/alt-tab-macos/issues/5260)
+* quitting apps by pressing q multiple times (closes [#5247](https://github.com/lwouis/alt-tab-macos/issues/5247)) ([21aeafd](https://github.com/lwouis/alt-tab-macos/commit/21aeafd))
+
+## [8.3.3](https://github.com/lwouis/alt-tab-macos/compare/v8.3.2...v8.3.3) (2026-01-25)
+
+
+### Bug Fixes
+
+* app icons could sometimes be invisible (closes [#5226](https://github.com/lwouis/alt-tab-macos/issues/5226)) ([23fbc01](https://github.com/lwouis/alt-tab-macos/commit/23fbc01))
+* improve trackpad gesture detection (closes [#5203](https://github.com/lwouis/alt-tab-macos/issues/5203)) ([9b5e43e](https://github.com/lwouis/alt-tab-macos/commit/9b5e43e))
+* switcher could sometimes show with no window pre-selected ([3e95f77](https://github.com/lwouis/alt-tab-macos/commit/3e95f77))
+* title could be off-center in app-icons appearance (closes [#5235](https://github.com/lwouis/alt-tab-macos/issues/5235)) ([7fdfe4a](https://github.com/lwouis/alt-tab-macos/commit/7fdfe4a))
+
+## [8.3.2](https://github.com/lwouis/alt-tab-macos/compare/v8.3.1...v8.3.2) (2026-01-22)
+
+
+### Bug Fixes
+
+* blacklisting fullscreen windows was not working (closes [#5228](https://github.com/lwouis/alt-tab-macos/issues/5228)) ([53815e0](https://github.com/lwouis/alt-tab-macos/commit/53815e0))
+
+## [8.3.1](https://github.com/lwouis/alt-tab-macos/compare/v8.3.0...v8.3.1) (2026-01-22)
+
+
+### Bug Fixes
+
+* chrome apps windows would not show in the switcher (closes [#5227](https://github.com/lwouis/alt-tab-macos/issues/5227)) ([bf3fa67](https://github.com/lwouis/alt-tab-macos/commit/bf3fa67))
+
+# [8.3.0](https://github.com/lwouis/alt-tab-macos/compare/v8.2.0...v8.3.0) (2026-01-20)
+
+
+### Bug Fixes
+
+* position of windowless indicator in thumbnails appearance ([d1fd1fd](https://github.com/lwouis/alt-tab-macos/commit/d1fd1fd))
+* small memory leak when opening the switcher (closes [#4255](https://github.com/lwouis/alt-tab-macos/issues/4255)) ([0a6485e](https://github.com/lwouis/alt-tab-macos/commit/0a6485e))
+* windows would sometimes not update their order (closes [#5207](https://github.com/lwouis/alt-tab-macos/issues/5207)) ([a3f2a54](https://github.com/lwouis/alt-tab-macos/commit/a3f2a54))
+
+
+### Features
+
+* increase apparition delay granularity (closes [#5210](https://github.com/lwouis/alt-tab-macos/issues/5210)) ([5b0df6b](https://github.com/lwouis/alt-tab-macos/commit/5b0df6b))
+
 # [8.2.0](https://github.com/lwouis/alt-tab-macos/compare/v8.1.0...v8.2.0) (2026-01-15)
 
 
